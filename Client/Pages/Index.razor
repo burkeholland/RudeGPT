@@ -1,9 +1,15 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div class="is-flex-grow-1">
+  <div class="columns is-full-height">
+    <Sidebar></Sidebar>
+    <div class="column is-flex is-flex-direction-column">
+      <NavBar></NavBar>
+      <hr class="mt-0 mb-4" />
+      <div class="chat-thread is-flex-grow-1">
+        <ChatMessage></ChatMessage>
+      </div>
+      <ChatBox></ChatBox>
+    </div>
+  </div>
+</div>
