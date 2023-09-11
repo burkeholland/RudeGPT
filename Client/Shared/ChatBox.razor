@@ -1,10 +1,41 @@
+@using Azure.AI.OpenAI
+@inject HttpClient Http
+
 <div class="chat">
   <div class="columns">
     <div class="column">
-      <textarea placeholder="Type your message..." class="textarea"></textarea>
+      <textarea class="textarea" placeholder="Type your message..." @bind="Model" @onkeydown="HandleKeyDown" />
     </div>
     <div class="column is-narrow is-flex is-flex-direction-column is-justify-content-flex-end">
       <div class="button is-primary is-block mr-3 is-rounded">Send</div>
     </div>
   </div>
 </div>
+
+@code {
+
+  public string Model { get; set; } = "";
+
+
+  [Parameter]
+  public EventCallback<string> OnUserMessageSubmit { get; set; }
+
+  private async Task AddMessage()
+  {
+    await OnUserMessageSubmit.InvokeAsync(Model);
+  }
+
+  private async void HandleKeyDown(KeyboardEventArgs e)
+  {
+    if (e.Key == "Enter" && e.ShiftKey)
+    {
+      // Shift + Enter was pressed, add a new line
+      Model += "\n";
+    }
+
+    else if (e.Key == "Enter")
+    {
+      await AddMessage();
+    }
+  }
+}

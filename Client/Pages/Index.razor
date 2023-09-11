@@ -1,5 +1,11 @@
 ﻿@page "/"
 
+@using System.Text
+@using System.Text.Json
+@using Azure.AI.OpenAI
+
+@inject HttpClient Http
+
 <div class="is-flex-grow-1">
   <div class="columns is-full-height">
     <Sidebar></Sidebar>
@@ -7,9 +13,29 @@
       <NavBar></NavBar>
       <hr class="mt-0 mb-4" />
       <div class="chat-thread is-flex-grow-1">
-        <ChatMessage></ChatMessage>
+        <MessageItem></MessageItem>
       </div>
-      <ChatBox></ChatBox>
+      <ChatBox OnUserMessageSubmit="@GetCompletion"></ChatBox>
     </div>
   </div>
 </div>
+
+@code {
+  private List<ChatMessage> chatSession = new List<ChatMessage>();
+
+  private async Task GetCompletion(string message)
+  {
+    // add the message to the messages list
+    chatSession.Add(new ChatMessage { Role = ChatRole.User, Content = message });
+
+    @* call the /api/completions endopint and pass in the messages object *@
+    var response = await Http.PostAsJsonAsync<List<ChatMessage>>("api/completions", chatSession);
+
+    if (response.Content is not null)
+    {
+      var responseContent = await response.Content.ReadAsStringAsync();
+      chatSession.Add(new ChatMessage { Role = ChatRole.User, Content = responseContent });
+    }
+
+  }
+}

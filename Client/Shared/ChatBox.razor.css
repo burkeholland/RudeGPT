@@ -7,7 +7,7 @@
     padding-top: 0.5rem;
 }
 
-.chat textarea {
+.textarea {
     resize: none;
     min-width: 100%;
     border: none;
