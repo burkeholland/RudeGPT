@@ -3,8 +3,11 @@
 @using System.Text
 @using System.Text.Json
 @using Azure.AI.OpenAI
+@using RudeGPT.Shared
 
 @inject HttpClient Http
+
+
 
 <div class="is-flex-grow-1">
   <div class="columns is-full-height">
@@ -13,7 +16,10 @@
       <NavBar></NavBar>
       <hr class="mt-0 mb-4" />
       <div class="chat-thread is-flex-grow-1">
-        <MessageItem></MessageItem>
+        @foreach (var message in chatSession)
+        {
+          <MessageItem message="@message"></MessageItem>
+        }
       </div>
       <ChatBox OnUserMessageSubmit="@GetCompletion"></ChatBox>
     </div>
@@ -21,21 +27,31 @@
 </div>
 
 @code {
-  private List<ChatMessage> chatSession = new List<ChatMessage>();
+  private List<Message> chatSession = new List<Message>();
+
+  private List<Message> messages = new List<Message>();
 
   private async Task GetCompletion(string message)
   {
-    // add the message to the messages list
-    chatSession.Add(new ChatMessage { Role = ChatRole.User, Content = message });
-
-    @* call the /api/completions endopint and pass in the messages object *@
-    var response = await Http.PostAsJsonAsync<List<ChatMessage>>("api/completions", chatSession);
-
-    if (response.Content is not null)
+    Console.WriteLine(message);
+    if (!String.IsNullOrEmpty(message))
     {
-      var responseContent = await response.Content.ReadAsStringAsync();
-      chatSession.Add(new ChatMessage { Role = ChatRole.User, Content = responseContent });
-    }
+      // add the message to the messages list
+      chatSession.Add(new Message { Role = ChatRole.User, Content = message });
 
+      var assistantMessage = new Message { Role = ChatRole.Assistant, Content = "..." };
+
+      chatSession.Add(assistantMessage);
+
+      // call the /api/completions endpoint and pass in the messages object
+      var response = await Http.PostAsJsonAsync<List<Message>>("api/completions", chatSession);
+      if (response.Content is not null)
+      {
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var content = JsonSerializer.Deserialize<string>(responseContent);
+
+        assistantMessage.Content = content;
+      }
+    }
   }
 }

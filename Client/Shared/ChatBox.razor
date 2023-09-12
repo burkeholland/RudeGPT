@@ -4,7 +4,9 @@
 <div class="chat">
   <div class="columns">
     <div class="column">
-      <textarea class="textarea" placeholder="Type your message..." @bind="Model" @onkeydown="HandleKeyDown" />
+      <EditForm Model="@Model">
+        <InputTextArea placeholder="Enter your message..." class="textarea" @bind-Value="Model" @onkeydown="@HandleKeyDown" @oninput="@(() => { StateHasChanged(); })"></InputTextArea>
+      </EditForm>
     </div>
     <div class="column is-narrow is-flex is-flex-direction-column is-justify-content-flex-end">
       <div class="button is-primary is-block mr-3 is-rounded">Send</div>
@@ -25,8 +27,20 @@
     await OnUserMessageSubmit.InvokeAsync(Model);
   }
 
+  private async Task OnSubmit()
+  {
+    if (string.IsNullOrEmpty(Model))
+    {
+      return;
+    }
+
+    await AddMessage();
+  }
+
   private async void HandleKeyDown(KeyboardEventArgs e)
   {
+    Console.WriteLine("Fired");
+
     if (e.Key == "Enter" && e.ShiftKey)
     {
       // Shift + Enter was pressed, add a new line

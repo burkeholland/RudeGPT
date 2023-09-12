@@ -8,6 +8,13 @@
       "cwd": "${workspaceFolder}/Client"
     },
     {
+      "name": "Attach to Blazor App",
+      "type": "blazorwasm",
+      "request": "attach",
+      "url": "https://localhost:5001",
+      "webRoot": "${workspaceFolder}/wwwroot"
+    },
+    {
       "name": "Attach to .NET Functions",
       "type": "coreclr",
       "request": "attach",

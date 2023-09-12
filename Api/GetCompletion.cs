@@ -12,6 +12,8 @@ using System.Net.Http.Json;
 using Azure.AI.OpenAI;
 using Azure;
 using System;
+using Azure.Messaging;
+using System.Linq;
 
 namespace RudeGPT.Api
 {
@@ -32,19 +34,18 @@ namespace RudeGPT.Api
 
                 // read the user message off the request body
                 var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                var messages = JsonSerializer.Deserialize<IList<ChatMessage>>(requestBody);
 
-                var chatCompletionOptions = new ChatCompletionsOptions(messages);
+                var t = JsonSerializer.Deserialize(requestBody, MessageContext.Default.ListMessage);
+
+                var chatMessages = t.Select((message) => message.ToChatMessage());
+
+                var chatCompletionOptions = new ChatCompletionsOptions(chatMessages);
 
                 Response<ChatCompletions> completionsResponse = await client.GetChatCompletionsAsync("gpt-35-turbo-16k", chatCompletionOptions);
 
-                foreach (ChatChoice choice in completionsResponse.Value.Choices)
-                {
-                    logger.LogInformation($"Completion: {choice.Message.Content}");
-                }
+                var responseContent = JsonSerializer.Serialize(completionsResponse.Value.Choices.FirstOrDefault().Message.Content);
 
                 var response = req.CreateResponse(HttpStatusCode.OK);
-                var responseContent = JsonSerializer.Serialize(completionsResponse.Value.Choices);
                 await response.WriteStringAsync(responseContent);
 
                 return response;
@@ -55,36 +56,5 @@ namespace RudeGPT.Api
                 return req.CreateResponse(HttpStatusCode.InternalServerError);
             }
         }
-
-        // public async Task<HttpResponseMessage> GetResponseAsync(List<Message> messages)
-        //         {
-        //             var temperature = 0.5;
-
-        //         var client = new HttpClient();
-
-        //         var options = new JsonSerializerOptions
-        //         {
-        //             WriteIndented = true,
-        //             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        //             Converters = {
-        //                     new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-        //                 }
-        //         };
-
-        //         var httpRequestMessage = new HttpRequestMessage
-        //         {
-        //             Method = HttpMethod.Post,
-        //             RequestUri = new System.Uri(AZURE_OPENAI_ENDPOINT),
-        //             Headers = {
-        //                     { "api-key", AZURE_OPENAI_KEY }
-        //                 },
-        //             Content = new StringContent(JsonSerializer.Serialize(new { messages, temperature }, options))
-        //         };
-
-        //         var response = await client.SendAsync(httpRequestMessage);
-
-        //             return response;
-        //         }
-        // }
     }
 }
