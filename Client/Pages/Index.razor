@@ -6,17 +6,19 @@
 @using RudeGPT.Shared
 
 @inject HttpClient Http
-
+@inject IJSRuntime JSRuntime
 
 
 <div class="is-flex-grow-1">
-  <div class="columns is-full-height">
-    <Sidebar></Sidebar>
+  <div class="columns is-full-height is-gapless">
+    <Sidebar chatHistory="@chatHistory" OnChatHistoryItemClick="@RestoreChatSession"
+      OnNewChatClick="@StartNewChatSession">
+    </Sidebar>
     <div class="column is-flex is-flex-direction-column">
       <NavBar></NavBar>
       <hr class="mt-0 mb-4" />
       <div class="chat-thread is-flex-grow-1">
-        @foreach (var message in chatSession)
+        @foreach (var message in chatSession.Messages)
         {
           <MessageItem message="@message"></MessageItem>
         }
@@ -27,24 +29,40 @@
 </div>
 
 @code {
-  private List<Message> chatSession = new List<Message>();
+  private ChatSession chatSession = new ChatSession();
 
-  private List<Message> messages = new List<Message>();
+  private List<ChatSession> chatHistory = new List<ChatSession>();
+
+  // when the component is initialized, load the chat history from local storage
+  protected override async Task OnInitializedAsync()
+  {
+    var json = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "chatHistory");
+
+    if (!String.IsNullOrEmpty(json))
+    {
+      chatHistory = JsonSerializer.Deserialize<List<ChatSession>>(json) ?? new List<ChatSession>();
+    }
+  }
+
+  private void StartNewChatSession()
+  {
+    chatSession = new ChatSession();
+  }
 
   private async Task GetCompletion(string message)
   {
-    Console.WriteLine(message);
     if (!String.IsNullOrEmpty(message))
     {
-      // add the message to the messages list
-      chatSession.Add(new Message { Role = ChatRole.User, Content = message });
+      // add the user message to the messages list
+      chatSession.Messages.Add(new Message { Role = ChatRole.User, Content = message });
 
+      // create a new assistant message that serves as a placeholder until the response is received
       var assistantMessage = new Message { Role = ChatRole.Assistant, Content = "..." };
 
-      chatSession.Add(assistantMessage);
+      chatSession.Messages.Add(assistantMessage);
 
       // call the /api/completions endpoint and pass in the messages object
-      var response = await Http.PostAsJsonAsync<List<Message>>("api/completions", chatSession);
+      var response = await Http.PostAsJsonAsync<List<Message>>("api/completions", chatSession.Messages);
       if (response.Content is not null)
       {
         var responseContent = await response.Content.ReadAsStringAsync();
@@ -52,6 +70,34 @@
 
         assistantMessage.Content = content;
       }
+
+      // if there are only 2 items in the chatSession.Messages list, add it to the chatHistory list
+      if (chatSession.Messages.Count == 2)
+      {
+        AddToLocalHistory(chatSession);
+      }
     }
+  }
+
+  private void RestoreChatSession(ChatSession chatSession)
+  {
+    this.chatSession = chatSession;
+  }
+
+  private async void AddToLocalHistory(ChatSession chatSession)
+  {
+    // get the first four words of the first message as the title
+    chatSession.Title = chatSession.Messages[0].Content.Split(' ').Take(4).Aggregate((a, b) => $"{a} {b}");
+
+    // add the item to chat history
+    chatHistory.Add(chatSession);
+
+    // serialize the chat history to json
+    var json = JsonSerializer.Serialize(chatHistory);
+
+    Console.WriteLine(json);
+
+    // save the chat history to local storage
+    await JSRuntime.InvokeVoidAsync("localStorage.setItem", "chatHistory", json);
   }
 }

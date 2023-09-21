@@ -2,18 +2,14 @@ using System.Net;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using System.IO;
-using System.Net.Http.Json;
 using Azure.AI.OpenAI;
 using Azure;
 using System;
-using Azure.Messaging;
 using System.Linq;
+using RudeGPT.Shared;
 
 namespace RudeGPT.Api
 {
@@ -21,6 +17,8 @@ namespace RudeGPT.Api
     {
         private static readonly string AZURE_OPENAI_KEY = System.Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY");
         private static readonly string AZURE_OPENAI_ENDPOINT = System.Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
+
+        private static readonly string SYSTEM_PROMPT = System.Environment.GetEnvironmentVariable("SYSTEM_PROMPT");
 
         [Function("GetCompletion")]
         public static async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "completions")] HttpRequestData req, FunctionContext executionContext)
@@ -37,7 +35,10 @@ namespace RudeGPT.Api
 
                 var t = JsonSerializer.Deserialize(requestBody, MessageContext.Default.ListMessage);
 
-                var chatMessages = t.Select((message) => message.ToChatMessage());
+                var chatMessages = t.Select((message) => message.ToChatMessage()).ToList();
+
+                // add the system prompt to the front of the chat messages list
+                chatMessages.Insert(0, new ChatMessage(ChatRole.System, SYSTEM_PROMPT));
 
                 var chatCompletionOptions = new ChatCompletionsOptions(chatMessages);
 
