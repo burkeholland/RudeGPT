@@ -19,6 +19,8 @@
 
   private bool preventDefault = false;
 
+  private string lastMessage = "";
+
 
   [Parameter]
   public EventCallback<string> OnUserMessageSubmit { get; set; }
@@ -30,17 +32,28 @@
 
   private async void HandleKeyDown(KeyboardEventArgs e)
   {
+    // the user has pressed the enter key and is not also
+    // holding down the shift key
     if (e.Key == "Enter" && !e.ShiftKey)
     {
-      var newMessage = Model;
+      preventDefault = true;
+
+      lastMessage = Model;
       Model = "";
 
-      preventDefault = true;
-      await AddMessage(newMessage);
+      // submit their message to the model for completion
+      await AddMessage(lastMessage);
+      return;
     }
-    else
+
+    // the user has pressed the up arrow and the chatbox is empty
+    if (e.Key == "ArrowUp" && String.IsNullOrEmpty(Model))
     {
-      preventDefault = false;
+      // restore their last message
+      Model = lastMessage;
+      return;
     }
+
+    preventDefault = false;
   }
 }
