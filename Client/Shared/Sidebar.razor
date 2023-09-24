@@ -1,33 +1,19 @@
-@using RudeGPT.Shared;
+@using RudeGPT.Shared
 
-<aside
+@inject StateContainer StateContainer
+
+<aside id="sidebar"
     class="column is-2 is-narrow-mobile is-fullheight section is-hidden-mobile has-background-success has-text-white">
     <div class="p-5">
         <button class="button is-success is-outlined is-inverted is-fullwidth" @onclick="HandleNewChatClick">New
             Chat</button>
-        <p class="menu-label has-text-white is-size-6">Chat History</p>
-        @foreach (var chat in chatHistory)
-        {
-            <div>
-                <a class="menu-item has-text-white is-size-7" @onclick="() => HandleHistoryItemClick(chat)"
-                    href="#">@chat.Title</a>
-            </div>
-        }
+        <ChatHistory />
     </div>
 </aside>
 
 @code {
-    [Parameter]
-    public List<ChatSession> chatHistory { get; set; } = new List<ChatSession>();
-
-    [Parameter]
-    public EventCallback<ChatSession> OnChatHistoryItemClick { get; set; }
-
-    [Parameter]
-    public EventCallback OnNewChatClick { get; set; }
-
-    private void HandleHistoryItemClick(ChatSession chatSession) => OnChatHistoryItemClick.InvokeAsync(chatSession);
-
-    private void HandleNewChatClick() => OnNewChatClick.InvokeAsync();
-
+    private void HandleNewChatClick()
+    {
+        StateContainer.ChatSession = new ChatSession();
+    }
 }
