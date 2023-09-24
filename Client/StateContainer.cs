@@ -15,7 +15,6 @@ public class StateContainer
         _jsRuntime = jsRuntime;
     }
 
-
     public ChatSession ChatSession
     {
         get => chatSession;
@@ -31,10 +30,15 @@ public class StateContainer
         get => chatHistory;
         set
         {
-            Console.WriteLine("Setting chat history");
             chatHistory = value;
             NotifyStateChanged();
         }
+    }
+
+    public void AddToChatHistory(ChatSession chatSession)
+    {
+        ChatHistory.Add(chatSession);
+        NotifyStateChanged();
     }
 
     public void SaveHistoryToLocalStorage()

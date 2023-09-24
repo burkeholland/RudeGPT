@@ -30,6 +30,12 @@
 </div>
 
 @code {
+
+  protected override void OnInitialized()
+  {
+    StateContainer.OnChange += StateHasChanged;
+  }
+
   private async Task GetCompletion(string message)
   {
     // add the user message to the messages list
@@ -57,9 +63,14 @@
       StateContainer.ChatSession.Title = StateContainer.ChatSession.Messages[0].Content.Split(' ').Take(4).Aggregate((a, b) =>
       $"{a} {b}");
 
-      StateContainer.ChatHistory.Add(StateContainer.ChatSession);
+      StateContainer.AddToChatHistory(StateContainer.ChatSession);
     }
 
     StateContainer.SaveHistoryToLocalStorage();
+  }
+
+  public void Dispose()
+  {
+    StateContainer.OnChange -= StateHasChanged;
   }
 }

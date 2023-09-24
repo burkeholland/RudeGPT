@@ -22,10 +22,19 @@
 
 @code {
 
+  @* protected override async Task OnInitializedAsync()
+{
+await StateContainer.LoadHistoryFromLocalStorage();
+} *@
+
   protected override void OnInitialized()
   {
     StateContainer.OnChange += StateHasChanged;
-    StateContainer.LoadHistoryFromLocalStorage();
+  }
+
+  protected override async Task OnInitializedAsync()
+  {
+    await StateContainer.LoadHistoryFromLocalStorage();
   }
 
   private void HandleHistoryItemClick(ChatSession chatHistoryItem)
@@ -42,5 +51,10 @@
     {
       StateContainer.ChatSession = new ChatSession();
     }
+  }
+
+  public void Dispose()
+  {
+    StateContainer.OnChange -= StateHasChanged;
   }
 }
