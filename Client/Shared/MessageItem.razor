@@ -1,25 +1,32 @@
 @using RudeGPT.Shared
 @using Azure.AI.OpenAI
 
-@if (message.Role == ChatRole.User)
-{
-    <div class="p-5">
-        <div class="container">
-            <p>@message.Content</p>
+<div class="p-5 @GetRoleClass()">
+    <div class="container is-max-desktop">
+        <div class="columns is-mobile">
+            <div class="column is-narrow">
+                <span class="icon">
+                    <i class="@GetRoleIcon() is-size-4"></i>
+                </span>
+            </div>
+            <div class="column">
+                @chatMessage.Content
+            </div>
         </div>
     </div>
-}
-else
-{
-    <div class="has-background-light p-5">
-        <div class="container">
-            <p>@message.Content</p>
-        </div>
-    </div>
-}
-
+</div>
 
 @code {
     [Parameter]
-    public Message message { get; set; } = new Message();
+    public Message chatMessage { get; set; } = new Message();
+
+    private string GetRoleClass()
+    {
+        return chatMessage.Role == ChatRole.User ? "has-background-white" : "has-background-light";
+    }
+
+    private string GetRoleIcon()
+    {
+        return chatMessage.Role == ChatRole.User ? "fa fa-user" : "fa fa-robot";
+    }
 }

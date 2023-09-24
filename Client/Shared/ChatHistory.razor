@@ -1,0 +1,54 @@
+@using RudeGPT.Shared
+@using System.Text.Json
+
+@inject IJSRuntime JSRuntime
+@inject StateContainer StateContainer
+
+<p class="menu-label has-text-white is-size-5">Chat History</p>
+@foreach (var chatHistoryItem in StateContainer.ChatHistory)
+{
+  <div class="mt-4">
+    <div class="columns is-vcentered">
+      <div class="column">
+        <a class="menu-item has-text-white is-size-6" @onclick="() => HandleHistoryItemClick(chatHistoryItem)"
+          href="#">@chatHistoryItem.Title</a>
+      </div>
+      <div class="column is-narrow">
+        <button class="delete" @onclick="() => HandleHistoryItemDelete(chatHistoryItem)"></button>
+      </div>
+    </div>
+  </div>
+}
+
+@code {
+  protected override void OnInitialized()
+  {
+    StateContainer.OnChange += StateHasChanged;
+  }
+
+  protected override async Task OnInitializedAsync()
+  {
+    await StateContainer.LoadHistoryFromLocalStorage();
+  }
+
+  private void HandleHistoryItemClick(ChatSession chatHistoryItem)
+  {
+    StateContainer.ChatSession = chatHistoryItem;
+  }
+
+  private void HandleHistoryItemDelete(ChatSession chatHistoryItem)
+  {
+    StateContainer.ChatHistory.Remove(chatHistoryItem);
+    StateContainer.SaveHistoryToLocalStorage();
+
+    if (StateContainer.ChatSession == chatHistoryItem)
+    {
+      StateContainer.ChatSession = new ChatSession();
+    }
+  }
+
+  public void Dispose()
+  {
+    StateContainer.OnChange -= StateHasChanged;
+  }
+}

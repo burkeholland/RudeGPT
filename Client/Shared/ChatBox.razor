@@ -5,7 +5,7 @@
   <div class="columns">
     <div class="column">
       <textarea class="textarea" @bind="Model" @onkeydown:preventDefault="@preventDefault" @bind:event="oninput"
-      @onkeydown="HandleKeyDown"></textarea>
+        @onkeydown="HandleKeyDown"></textarea>
     </div>
     <div class="column is-narrow is-flex is-flex-direction-column is-justify-content-flex-end">
       <div class="button is-primary is-block mr-3 is-rounded">Send</div>
@@ -19,26 +19,41 @@
 
   private bool preventDefault = false;
 
+  private string lastMessage = "";
+
 
   [Parameter]
   public EventCallback<string> OnUserMessageSubmit { get; set; }
 
-  private async Task AddMessage()
+  private async Task AddMessage(string newMessage)
   {
-    await OnUserMessageSubmit.InvokeAsync(Model);
-    Model = "";
+    await OnUserMessageSubmit.InvokeAsync(newMessage);
   }
 
   private async void HandleKeyDown(KeyboardEventArgs e)
   {
+    // the user has pressed the enter key and is not also
+    // holding down the shift key
     if (e.Key == "Enter" && !e.ShiftKey)
     {
       preventDefault = true;
-      await AddMessage();
+
+      lastMessage = Model;
+      Model = "";
+
+      // submit their message to the model for completion
+      await AddMessage(lastMessage);
+      return;
     }
-    else
+
+    // the user has pressed the up arrow and the chatbox is empty
+    if (e.Key == "ArrowUp" && String.IsNullOrEmpty(Model))
     {
-      preventDefault = false;
+      // restore their last message
+      Model = lastMessage;
+      return;
     }
+
+    preventDefault = false;
   }
 }
