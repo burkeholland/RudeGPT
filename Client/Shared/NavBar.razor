@@ -1,5 +1,23 @@
-<nav class="level mt-4 is-fullwidth">
-    <p class="level-item has-text-centered title">
-        RudeGPT
-    </p>
+@using RudeGPT.Shared
+
+@inject StateContainer StateContainer
+
+<nav id="navbar" class="is-fullwidth has-background-success is-flex justify-content-space-between">
+    <div class="navbar-item is-flex-grow-1 is-flex is-justify-content-flex-start">
+        <button class="button is-success is-medium">
+            <span class="icon"><i class="fa fa-home"></i></span>
+        </button>
+    </div>
+    <div class="navbar-item is-flex-grow-1 is-flex is-justify-content-flex-end">
+        <button class="button is-success is-medium" @onclick="HandleNewChatClick">
+            <span class="icon"><i class="fa fa-plus"></i></span>
+        </button>
+    </div>
 </nav>
+
+@code {
+    private void HandleNewChatClick()
+    {
+        StateContainer.ChatSession = new ChatSession();
+    }
+}

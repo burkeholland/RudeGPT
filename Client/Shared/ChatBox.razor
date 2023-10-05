@@ -1,8 +1,8 @@
 @using Azure.AI.OpenAI
 @inject HttpClient Http
 
-<div class="chat m-5">
-  <div class="columns">
+<div class="chat">
+  <div class="columns is-mobile">
     <div class="column">
       <textarea class="textarea" @bind="Model" @onkeydown:preventDefault="@preventDefault" @bind:event="oninput"
         @onkeydown="HandleKeyDown"></textarea>

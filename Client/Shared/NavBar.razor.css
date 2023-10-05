@@ -1,0 +1,10 @@
+#navbar {
+    display: none !important;
+    ;
+}
+
+@media screen and (max-width: 768px) {
+    #navbar {
+        display: flex !important;
+    }
+}

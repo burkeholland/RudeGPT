@@ -10,11 +10,11 @@
 @inject StateContainer StateContainer
 
 <div class="is-flex-grow-1 no-scrollbar">
-  @* <NavBar></NavBar> *@
-  <div class="columns is-full-height is-gapless">
+  <NavBar></NavBar>
+  <div class="columns is-full-height is-gapless is-flex">
     <Sidebar></Sidebar>
     <div class="column is-flex is-flex-direction-column">
-      <p class="level-item has-text-centered title">
+      <p class="level-item has-text-centered title mt-4">
         RudeGPT
       </p>
       <hr class="mt-0 mb-4" />
@@ -24,7 +24,9 @@
           <MessageItem chatMessage="@chatMessage"></MessageItem>
         }
       </div>
-      <ChatBox OnUserMessageSubmit="@GetCompletion"></ChatBox>
+      <footer>
+        <ChatBox OnUserMessageSubmit="@GetCompletion"></ChatBox>
+      </footer>
     </div>
   </div>
 </div>
