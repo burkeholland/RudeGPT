@@ -3,7 +3,7 @@
 @inject StateContainer StateContainer
 
 <aside id="sidebar"
-    class="column is-2 is-narrow-mobile is-fullheight section is-hidden-mobile has-background-success has-text-white">
+    class="column is-2 is-narrow-mobile is-fullheight section is-hidden-mobile has-background-success has-text-white @SidebarClass">
     <div class="p-5">
         <button class="button is-success is-outlined is-inverted is-fullwidth" @onclick="HandleNewChatClick">New
             Chat</button>
@@ -12,6 +12,12 @@
 </aside>
 
 @code {
+
+    [Parameter]
+    public bool sidebarIsOpen { get; set; }
+
+    private string SidebarClass => sidebarIsOpen ? "sidebar-open" : "";
+
     private void HandleNewChatClick()
     {
         StateContainer.ChatSession = new ChatSession();

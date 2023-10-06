@@ -1,5 +1,6 @@
 #sidebar {
     width: 260px;
+    transition: left 0.2s ease-in-out;
 }
 
 @media screen and (max-width: 768px) {
@@ -8,7 +9,11 @@
         position: fixed;
         height: 100vh;
         z-index: 1;
-        width: 0;
+        left: -260px;
         overflow: hidden;
+    }
+
+    #sidebar.sidebar-open {
+        left: 0;
     }
 }

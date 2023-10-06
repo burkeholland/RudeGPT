@@ -4,8 +4,8 @@
 
 <nav id="navbar" class="is-fullwidth has-background-success is-flex justify-content-space-between">
     <div class="navbar-item is-flex-grow-1 is-flex is-justify-content-flex-start">
-        <button class="button is-success is-medium">
-            <span class="icon"><i class="fa fa-home"></i></span>
+        <button class="button is-success is-medium" @onclick="HandleToggleMenuClick">
+            <span class="icon"><i class="fa fa-navicon"></i></span>
         </button>
     </div>
     <div class="navbar-item is-flex-grow-1 is-flex is-justify-content-flex-end">
@@ -16,8 +16,17 @@
 </nav>
 
 @code {
+
+    [Parameter]
+    public EventCallback OnSideBarIconClick { get; set; }
+
     private void HandleNewChatClick()
     {
         StateContainer.ChatSession = new ChatSession();
+    }
+
+    private void HandleToggleMenuClick()
+    {
+        OnSideBarIconClick.InvokeAsync();
     }
 }
