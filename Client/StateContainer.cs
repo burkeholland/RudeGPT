@@ -8,6 +8,8 @@ public class StateContainer
 
     private List<ChatSession> chatHistory = new List<ChatSession>();
 
+    private bool sideBarIsOpen = false;
+
     private IJSRuntime _jsRuntime;
 
     public StateContainer(IJSRuntime jsRuntime)
@@ -31,6 +33,16 @@ public class StateContainer
         set
         {
             chatHistory = value;
+            NotifyStateChanged();
+        }
+    }
+
+    public bool SideBarIsOpen
+    {
+        get => sideBarIsOpen;
+        set
+        {
+            sideBarIsOpen = value;
             NotifyStateChanged();
         }
     }

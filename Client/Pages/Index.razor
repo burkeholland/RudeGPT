@@ -6,7 +6,7 @@
 @using RudeGPT.Shared
 
 @inject HttpClient Http
-@inject IJSRuntime JSRuntime
+@inject IJSRuntime JSRuntwaime
 @inject StateContainer StateContainer
 
 <div class="is-flex-grow-1 no-scrollbar">
@@ -14,8 +14,8 @@
   <div class="columns is-full-height is-gapless">
     <Sidebar sidebarIsOpen="@sidebarIsOpen"></Sidebar>
     <div class="column is-flex is-flex-direction-column" @onclick="() => sidebarIsOpen = false">
-      <p class="level-item has-text-centered title mt-4">
-        RudeGPT
+      <p class="level-item has-text-centered pt-5 pb-5">
+        RudeGPT 3.5 Turbo
       </p>
       <hr class="mt-0 mb-4" />
       <div id="thread" class="overflow-scroll is-flex-grow-1 no-scrollbar">
@@ -42,7 +42,13 @@
 
   protected override void OnInitialized()
   {
-    StateContainer.OnChange += StateHasChanged;
+    StateContainer.OnChange += ToggleSidebar;
+  }
+
+  private void ToggleSidebar()
+  {
+    sidebarIsOpen = false;
+    StateHasChanged();
   }
 
   private async Task GetCompletion(string message)

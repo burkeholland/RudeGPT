@@ -11,9 +11,11 @@
         z-index: 1;
         left: -260px;
         overflow: hidden;
+        top: 0;
     }
 
     #sidebar.sidebar-open {
         left: 0;
+        top: 0;
     }
 }
