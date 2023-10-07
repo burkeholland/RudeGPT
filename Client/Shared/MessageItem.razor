@@ -1,5 +1,6 @@
 @using RudeGPT.Shared
 @using Azure.AI.OpenAI
+@using Markdig
 
 <div class="p-5 @GetRoleClass()">
     <div class="container is-max-desktop">
@@ -10,7 +11,7 @@
                 </span>
             </div>
             <div class="column">
-                @chatMessage.Content
+                <div class="content">@((MarkupString)Markdown.ToHtml(chatMessage.Content))</div>
             </div>
         </div>
     </div>

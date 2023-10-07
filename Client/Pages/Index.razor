@@ -11,14 +11,14 @@
 
 <div class="is-flex-grow-1 no-scrollbar">
   <NavBar OnSideBarIconClick="@OpenSideBar"></NavBar>
-  <div class="columns is-full-height is-gapless is-flex">
+  <div class="columns is-full-height is-gapless">
     <Sidebar sidebarIsOpen="@sidebarIsOpen"></Sidebar>
     <div class="column is-flex is-flex-direction-column" @onclick="() => sidebarIsOpen = false">
       <p class="level-item has-text-centered title mt-4">
         RudeGPT
       </p>
       <hr class="mt-0 mb-4" />
-      <div class="overflow-scroll is-flex-grow-1 no-scrollbar">
+      <div id="thread" class="overflow-scroll is-flex-grow-1 no-scrollbar">
         @foreach (var chatMessage in StateContainer.ChatSession.Messages)
         {
           <MessageItem chatMessage="@chatMessage"></MessageItem>
