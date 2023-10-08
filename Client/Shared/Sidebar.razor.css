@@ -8,13 +8,13 @@
         display: block !important;
         position: fixed;
         height: 100vh;
-        z-index: 1;
+        z-index: 9999;
         left: -260px;
         overflow: hidden;
         top: 0;
     }
 
-    #sidebar.sidebar-open {
+    #sidebar.is-visible {
         left: 0;
         top: 0;
     }

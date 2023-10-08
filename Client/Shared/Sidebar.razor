@@ -16,7 +16,7 @@
     [Parameter]
     public bool sidebarIsOpen { get; set; }
 
-    private string SidebarClass => sidebarIsOpen ? "sidebar-open" : "";
+    private string SidebarClass => sidebarIsOpen ? "is-visible" : "";
 
     private void HandleNewChatClick()
     {
