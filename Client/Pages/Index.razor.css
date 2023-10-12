@@ -40,3 +40,14 @@ footer {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
 }
+
+#newChat {
+    border: 1px solid #fff;
+    background-color: inherit;
+}
+
+.button.is-success.is-inverted.is-outlined:hover {
+    /* background-color: #fff; */
+    color: inherit;
+    background-color: inherit;
+}

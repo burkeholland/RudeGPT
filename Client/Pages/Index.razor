@@ -11,9 +11,10 @@
 
 <div class="is-flex-grow-1 no-scrollbar">
   <NavBar OnSideBarIconClick="@OpenSideBar"></NavBar>
-  <div class="columns is-full-height is-gapless is-relative">
-    <Sidebar sidebarIsOpen="@sidebarIsOpen"></Sidebar>
-    <div id="overlay" @onclick="() => sidebarIsOpen = false" class="@OverlayClass"></div>
+  <div class="columns is-full-height is-gapless is-relative is-mobile">
+    <div class="column is-full-height is-narrow">
+      <Sidebar sidebarIsOpen="@sidebarIsOpen"></Sidebar>
+    </div>
     <div class="column is-flex is-flex-direction-column">
       <p class="level-item has-text-centered pt-5 pb-5">
         RudeGPT 3.5 Turbo
@@ -30,6 +31,7 @@
       </footer>
     </div>
   </div>
+  <div id="overlay" @onclick="() => sidebarIsOpen = false" class="@OverlayClass"></div>
 </div>
 
 @code {

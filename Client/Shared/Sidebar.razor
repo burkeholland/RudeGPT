@@ -2,13 +2,13 @@
 
 @inject StateContainer StateContainer
 
-<aside id="sidebar"
-    class="column is-2 is-narrow-mobile is-fullheight section is-hidden-mobile has-background-success has-text-white @SidebarClass">
-    <div class="p-5">
-        <button class="button is-success is-outlined is-inverted is-fullwidth" @onclick="HandleNewChatClick">New
+<aside id="sidebar" class="is-fullheight has-background-success has-text-white @SidebarClass">
+    <div class="p-4">
+        <button class="button is-success is-outlined is-inverted is-fullwidth is-block"
+            @onclick="HandleNewChatClick">New
             Chat</button>
-        <ChatHistory />
     </div>
+    <ChatHistory />
 </aside>
 
 @code {

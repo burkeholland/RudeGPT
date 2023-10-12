@@ -1,10 +1,11 @@
 #sidebar {
     width: 260px;
     transition: left 0.2s ease-in-out;
+    height: 100vh;
 }
 
 @media screen and (max-width: 768px) {
-    #sidebar.is-hidden-mobile {
+    #sidebar {
         display: block !important;
         position: fixed;
         height: 100vh;
