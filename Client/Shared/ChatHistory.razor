@@ -8,10 +8,10 @@
 @foreach (var chatHistoryItem in StateContainer.ChatHistory)
 {
   <div class="mt-4 is-clickable">
-    <span class="menu-item has-text-white is-size-6" @onclick="() => HandleHistoryItemClick(chatHistoryItem)" href="#">
-      <div class="columns is-vcentered is-mobile">
-        <div class="column">
-          @chatHistoryItem.Title
+  <span class="menu-item has-text-white is-size-6" @onclick="() => HandleHistoryItemClick(chatHistoryItem)" href="#">
+    <div class="columns is-vcentered is-mobile">
+      <div class="column">
+        @chatHistoryItem.Title
         </div>
         <div class="column is-narrow">
           <button class="delete" @onclick="() => HandleHistoryItemDelete(chatHistoryItem)"></button>
@@ -27,24 +27,19 @@
     StateContainer.OnChange += StateHasChanged;
   }
 
-  protected override async Task OnInitializedAsync()
-  {
-    await StateContainer.LoadHistoryFromLocalStorage();
-  }
 
   private void HandleHistoryItemClick(ChatSession chatHistoryItem)
   {
-    StateContainer.ChatSession = chatHistoryItem;
+    StateContainer.SetActiveChatSession(chatHistoryItem);
   }
 
   private void HandleHistoryItemDelete(ChatSession chatHistoryItem)
   {
-    StateContainer.ChatHistory.Remove(chatHistoryItem);
-    StateContainer.SaveHistoryToLocalStorage();
+    StateContainer.RemoveFromChatHistory(chatHistoryItem);
 
-    if (StateContainer.ChatSession == chatHistoryItem)
+    if (StateContainer.ActiveChat == chatHistoryItem)
     {
-      StateContainer.ChatSession = new ChatSession();
+      StateContainer.ActiveChat = new ChatSession();
     }
   }
 

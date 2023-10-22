@@ -20,7 +20,7 @@
       </p>
       <hr class="mt-0 mb-4" />
       <div id="thread" class="overflow-scroll is-flex-grow-1 no-scrollbar">
-        @foreach (var chatMessage in StateContainer.ChatSession.Messages)
+        @foreach (var chatMessage in StateContainer.ActiveChat.Messages)
         {
           <MessageItem chatMessage="@chatMessage"></MessageItem>
         }
@@ -43,9 +43,10 @@
     sidebarIsOpen = true;
   }
 
-  protected override void OnInitialized()
+  protected override async Task OnInitializedAsync()
   {
     StateContainer.OnChange += ToggleSidebar;
+    await StateContainer.LoadApplicationState();
   }
 
   private void ToggleSidebar()
@@ -57,15 +58,15 @@
   private async Task GetCompletion(string message)
   {
     // add the user message to the messages list
-    StateContainer.ChatSession.Messages.Add(new Message { Role = ChatRole.User, Content = message });
+    StateContainer.ActiveChat.Messages.Add(new Message { Role = ChatRole.User, Content = message });
 
     // create a new assistant message that serves as a placeholder until the response is received
     var assistantMessage = new Message { Role = ChatRole.Assistant, Content = "..." };
 
-    StateContainer.ChatSession.Messages.Add(assistantMessage);
+    StateContainer.ActiveChat.Messages.Add(assistantMessage);
 
     // call the /api/completions endpoint and pass in the messages object
-    var response = await Http.PostAsJsonAsync<List<Message>>("api/completions", StateContainer.ChatSession.Messages);
+    var response = await Http.PostAsJsonAsync<List<Message>>("api/completions", StateContainer.ActiveChat.Messages);
     if (response.Content is not null)
     {
       var responseContent = await response.Content.ReadAsStringAsync();
@@ -74,17 +75,17 @@
       assistantMessage.Content = content;
     }
 
-    // if there are only 2 items in the StateContainer.ChatSession.Messages list, add it to the chatHistory list
-    if (StateContainer.ChatSession.Messages.Count == 2)
+    // if there are only 2 items in the StateContainer.ActiveChat.Messages list, add it to the chatHistory list
+    if (StateContainer.ActiveChat.Messages.Count == 2)
     {
       // get the first four words of the first message as the title
-      StateContainer.ChatSession.Title = StateContainer.ChatSession.Messages[0].Content.Split(' ').Take(4).Aggregate((a, b) =>
+      StateContainer.ActiveChat.Title = StateContainer.ActiveChat.Messages[0].Content.Split(' ').Take(4).Aggregate((a, b) =>
       $"{a} {b}");
 
-      StateContainer.AddToChatHistory(StateContainer.ChatSession);
+      StateContainer.AddToChatHistory(StateContainer.ActiveChat);
     }
 
-    StateContainer.SaveHistoryToLocalStorage();
+    StateContainer.SaveApplicationState();
   }
 
   public void Dispose()

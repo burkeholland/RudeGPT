@@ -4,7 +4,7 @@ using Microsoft.JSInterop;
 
 public class StateContainer
 {
-    private ChatSession chatSession = new ChatSession();
+    private ChatSession activeChat = new ChatSession();
 
     private List<ChatSession> chatHistory = new List<ChatSession>();
 
@@ -17,12 +17,12 @@ public class StateContainer
         _jsRuntime = jsRuntime;
     }
 
-    public ChatSession ChatSession
+    public ChatSession ActiveChat
     {
-        get => chatSession;
+        get => activeChat;
         set
         {
-            chatSession = value;
+            activeChat = value;
             NotifyStateChanged();
         }
     }
@@ -47,19 +47,45 @@ public class StateContainer
         }
     }
 
+    public void SetActiveChatSession(ChatSession chatSession)
+    {
+        ActiveChat = chatSession;
+        SaveApplicationState();
+    }
+
+    public void StartNewChatSession()
+    {
+        if (ActiveChat.Messages.Count > 0)
+        {
+            ActiveChat = new ChatSession();
+            SaveApplicationState();
+        }
+    }
+
     public void AddToChatHistory(ChatSession chatSession)
     {
         ChatHistory.Add(chatSession);
+        SaveApplicationState();
         NotifyStateChanged();
     }
 
-    public void SaveHistoryToLocalStorage()
+    public void RemoveFromChatHistory(ChatSession chatSession)
+    {
+        ChatHistory.Remove(chatSession);
+        SaveApplicationState();
+        NotifyStateChanged();
+    }
+
+    public void SaveApplicationState()
     {
         var json = JsonSerializer.Serialize(ChatHistory);
         _jsRuntime.InvokeVoidAsync("localStorage.setItem", "chatHistory", json);
+
+        json = JsonSerializer.Serialize(ActiveChat);
+        _jsRuntime.InvokeVoidAsync("localStorage.setItem", "activeChat", json);
     }
 
-    public async Task LoadHistoryFromLocalStorage()
+    public async Task LoadApplicationState()
     {
         var json = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "chatHistory");
         if (!string.IsNullOrEmpty(json))
@@ -67,6 +93,15 @@ public class StateContainer
             var chatHistory = JsonSerializer.Deserialize<List<ChatSession>>(json);
             ChatHistory = chatHistory ?? new List<ChatSession>();
         }
+
+        json = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "activeChat");
+        if (!string.IsNullOrEmpty(json))
+        {
+            var activeChat = JsonSerializer.Deserialize<ChatSession>(json);
+            ActiveChat = activeChat ?? new ChatSession();
+        }
+
+        NotifyStateChanged();
     }
 
     public event Action? OnChange;
