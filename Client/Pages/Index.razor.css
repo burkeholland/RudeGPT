@@ -33,6 +33,10 @@ footer {
     #thread {
         margin-bottom: 240px;
     }
+
+    #model {
+        display: none;
+    }
 }
 
 #overlay {

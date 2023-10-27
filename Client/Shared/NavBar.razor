@@ -2,11 +2,15 @@
 
 @inject StateContainer StateContainer
 
-<nav id="navbar" class="is-fullwidth has-background-success is-flex justify-content-space-between">
+<nav id="navbar"
+    class="is-fullwidth has-background-success is-flex justify-content-space-between is-align-items-center">
     <div class="navbar-item is-flex-grow-1 is-flex is-justify-content-flex-start">
         <button class="button is-success is-medium" @onclick="HandleToggleMenuClick">
             <span class="icon"><i class="fa fa-navicon"></i></span>
         </button>
+    </div>
+    <div class="navbar-item is-flex-grow-1 is-flex is-justify-content-center">
+        <h1 class="has-text-white">RudeGPT 3.5 Turbo</h1>
     </div>
     <div class="navbar-item is-flex-grow-1 is-flex is-justify-content-flex-end">
         <button class="button is-success is-medium" @onclick="HandleNewChatClick">
