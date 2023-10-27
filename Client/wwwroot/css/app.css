@@ -48,3 +48,7 @@ body {
 .blazor-error-boundary::after {
     content: "An error has occurred."
 }
+
+.content code {
+    white-space: pre-wrap;
+}

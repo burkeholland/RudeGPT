@@ -4,22 +4,21 @@
 @inject IJSRuntime JSRuntime
 @inject StateContainer StateContainer
 
-<p class="menu-label has-text-white is-size-5">Chat History</p>
-@foreach (var chatHistoryItem in StateContainer.ChatHistory)
-{
-  <div class="mt-4 is-clickable">
-  <span class="menu-item has-text-white is-size-6" @onclick="() => HandleHistoryItemClick(chatHistoryItem)" href="#">
-    <div class="columns is-vcentered is-mobile">
-      <div class="column">
-        @chatHistoryItem.Title
-        </div>
-        <div class="column is-narrow">
-          <button class="delete" @onclick="() => HandleHistoryItemDelete(chatHistoryItem)"></button>
-        </div>
+<div class="mt-5">
+  <p class="has-text-white has-text-centered">Chat History</p>
+  @foreach (var chatHistoryItem in StateContainer.ChatHistory)
+  {
+    <div class="columns m-1 history-item is-mobile">
+      <div class="column is-clickable" @onclick="() => HandleHistoryItemClick(chatHistoryItem)">
+        <a class="has-text-white">@chatHistoryItem.Title
+        </a>
       </div>
-    </span>
-  </div>
-}
+      <div class="column is-narrow">
+        <button class="delete" @onclick="() => HandleHistoryItemDelete(chatHistoryItem)"></button>
+      </div>
+    </div>
+  }
+</div>
 
 @code {
   protected override void OnInitialized()
