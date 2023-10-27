@@ -18,16 +18,21 @@ footer {
     #overlay.is-visible {
         display: none;
     }
+
+
+    #thread {
+        margin-bottom: 175px;
+    }
 }
 
 @media screen and (max-width: 768px) {
     #overlay.is-visible {
         display: block;
     }
-}
 
-#thread {
-    margin-bottom: 175px;
+    #thread {
+        margin-bottom: 240px;
+    }
 }
 
 #overlay {
