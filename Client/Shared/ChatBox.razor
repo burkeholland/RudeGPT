@@ -8,7 +8,7 @@
         @onkeydown="HandleKeyDown"></textarea>
     </div>
     <div class="column is-narrow is-flex is-flex-direction-column is-justify-content-flex-end">
-      <div class="button is-primary is-block mr-3 is-rounded">Send</div>
+      <button class="button is-primary is-block mr-3 is-rounded" @onclick="HandleSendButtonClick">Send</button>
     </div>
   </div>
 </div>
@@ -30,12 +30,25 @@
     await OnUserMessageSubmit.InvokeAsync(newMessage);
   }
 
+  private async void HandleSendButtonClick()
+  {
+    preventDefault = true;
+
+    lastMessage = Model;
+    Model = "";
+
+    // submit their message to the model for completion
+    await AddMessage(lastMessage);
+  }
+
   private async void HandleKeyDown(KeyboardEventArgs e)
   {
     // the user has pressed the enter key and is not also
     // holding down the shift key
     if (e.Key == "Enter" && !e.ShiftKey)
     {
+      // we are preventing the default case here (key press) because
+      // we don't want to add a carriage return to the text area
       preventDefault = true;
 
       lastMessage = Model;
