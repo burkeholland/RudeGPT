@@ -68,6 +68,19 @@
 			}
 		},
 		{
+			"type": "dotnet",
+			"task": "watch Blazor App",
+			"file": "C:\\Users\\burke\\Dev\\RudeGPT\\Client\\Client.csproj",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"label": "Watch Blazor App",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
 			"type": "func",
 			"dependsOn": "build",
 			"options": {
