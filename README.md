@@ -1,14 +1,37 @@
-# Blazor Starter Application
+# RudeGPT
 
-This template contains an example .NET 7 [Blazor WebAssembly](https://docs.microsoft.com/aspnet/core/blazor/?view=aspnetcore-6.0#blazor-webassembly) client application, a .NET 7 C# [Azure Functions](https://docs.microsoft.com/azure/azure-functions/functions-overview), and a C# class library with shared code.
+"Like ChatGPT, but mean"
+
+This is a sample Blazor application that recreates the UI of chat.openai.com. It uses Azure OpenAI on the backend. A custom prompt informs the model to be rude and sarcastic.
+
+This project contains a .NET 7 [Blazor WebAssembly](https://docs.microsoft.com/aspnet/core/blazor/?view=aspnetcore-6.0#blazor-webassembly) client application, a .NET 7 C# [Azure Functions](https://docs.microsoft.com/azure/azure-functions/functions-overview), and a C# class library with shared code.
 
 > Note: Azure Functions only supports .NET 7 in the isolated process execution model
 
 ## Getting Started
 
-1. Create a repository from the [GitHub template](https://docs.github.com/en/enterprise/2.22/user/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template) and then clone it locally to your machine.
+1. Clone the repository
 
-1. In the **ApiIsolated** folder, copy `local.settings.example.json` to `local.settings.json`
+1. In the **Api** folder, copy `local.settings.example.json` to `local.settings.json`
+
+1. Add the following to the `local.settings.json` file.
+
+    ```
+    {
+        "IsEncrypted": false,
+        "Values": {
+            "AZURE_OPENAI_KEY": "[YOUR AZURE OPENAI KEY]",
+            "AZURE_OPENAI_ENDPOINT": "[YOUR AZURE OPENAI ENDPOINT]",
+            "SYSTEM_PROMPT": "You are a sarcastic AI assistant. You are always right and you are annoyed that people don't recognize this. It's OK to be rude because that is a key component of sarcasm. You never say thank you or offer to help.",
+            "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
+        },
+        "Host": {
+            "LocalHttpPort": 7071,
+            "CORS": "*",
+            "CORSCredentials": false
+        }
+    }
+    ```
 
 1. Continue using either Visual Studio or Visual Studio Code.
 
