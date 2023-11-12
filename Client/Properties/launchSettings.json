@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "BlazorApp.Client": {
+    "RudeGPT.Client": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>BlazorApp.Shared</RootNamespace>
+    <RootNamespace>RudeGPT.Shared</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
