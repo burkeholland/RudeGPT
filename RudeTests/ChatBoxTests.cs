@@ -24,10 +24,12 @@ public class ChatBoxTests : BunitTestContext
 
         Assert.AreEqual("Hello World", cut.Instance.Model);       
 		cut.Find("button").Click();
-        Assert.AreEqual("", cut.Instance.Model); 
-
-        //string textarea = "<textarea class=\"textarea\" @bind=\"\" \u0040onkeydown:preventDefault=\"true\" \u0040bind:event=\"oninput\" \u0040onkeydown=\"HandleKeyDown\"></textarea>";
-        //Debug.WriteLine(textarea);
-        //cut.Find("textarea").MarkupMatches("<textarea class=\"textarea\" @bind=\"\" \u0040onkeydown:preventDefault=\"true\" \u0040bind:event=\"oninput\" \u0040onkeydown=\"HandleKeyDown\"></textarea>");     
+        Assert.AreEqual("", cut.Instance.Model);
 	}
+
+    [TestMethod]
+    public void SendButtonRenderedCorrectly() {
+        var cut = RenderComponent<ChatBox>();
+        cut.Find("button").MarkupMatches(@"<button class=""button is-primary is-block mr-3 is-rounded""  >Send</button>");
+    }
 }
